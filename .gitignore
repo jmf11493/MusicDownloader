@@ -1,4 +1,5 @@
 /music_dl/ffmpeg
 /music_dl/__pycache__
 /music_dl/installer
+/music_dl/build
 *.spec
