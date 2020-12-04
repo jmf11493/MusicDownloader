@@ -6,7 +6,7 @@ An acceptable csv file can be generated here: http://joellehman.com/playlist/ind
 
 ![music downloader screenshot](https://github.com/jmf11493/MusicDownloader/blob/main/screenshots/Music%20Download%20Screenshot.JPG)
 
-## Basic Useage
+## Basic Usage
 1. Select desired output directory
 2. Select a valid input .csv file
 3. Click start download
