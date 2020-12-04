@@ -5,7 +5,7 @@ Songs are then converted to MP3s to add meta-data and to normalize the audio. Th
 An acceptable csv file can be generated here: http://joellehman.com/playlist/index.html
 
 ## Download the installer to give it a try!
-The exe can be found here: music_dl/dist/Music Downloader.exe
+The exe can be found here: music_dl/installer/Output/music_downloader_setup.exe
 
 ![music downloader screenshot](https://github.com/jmf11493/MusicDownloader/blob/main/screenshots/Music%20Download%20Screenshot.JPG)
 
@@ -17,11 +17,10 @@ The exe can be found here: music_dl/dist/Music Downloader.exe
 ## Known issues:
 Currently using Pafy to download from youtube. One of the issues is some videos won't fully complete the download and result in a corrupt audio file. The software accounts for this by throwing out unreasonably small file sizes and logs an error into the log which song failed to download. Opened and issue for it here: https://github.com/mps-youtube/pafy/issues/267
 
-## To Generate a New .exe
-pyinstaller command: pyinstaller main.py -n "Music Downloader" --noconsole -F
-Failed to execute script: Delete all build files and re-run the pyinstaller command
-
-To create an installer run Inno Setup Script
+## To Generate a New .exe and Installer
+1. pyinstaller command: pyinstaller main.py -n "Music Downloader" --noconsole -F
+Note: Failed to execute script: Delete all build files and re-run the pyinstaller command
+2. To create an installer run Inno Setup Script
  
 GUI is created using PyQt
 To convert the ui file to python use the following command: pyuic my_gui_file.ui -o gui_file.py
