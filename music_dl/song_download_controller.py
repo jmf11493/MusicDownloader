@@ -22,7 +22,6 @@ class SongDownloadController(object):
         self._convert        = True
         self._csv_file       = ''
         self._output_file    = ''
-        self._web_scrape_try = 5
         self._sleep_time     = 2
         self._download_try   = 5
         
@@ -44,8 +43,6 @@ class SongDownloadController(object):
     def output_dir_change(self, value):
         self._output_file = value
     
-    def web_scrape_change(self, value):
-        self._web_scrape_try = value
     
     def time_sleep_change(self, value):
         self._sleep_time = value
@@ -68,6 +65,5 @@ class SongDownloadController(object):
             self._normalize, 
             self._convert,
             self._sleep_time,
-            self._download_try,
-            self._web_scrape_try
+            self._download_try
         )

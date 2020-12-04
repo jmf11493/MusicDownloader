@@ -8,8 +8,6 @@ from youtubesearchpython import SearchVideos
 import csv
 import os
 import fnmatch
-from bs4 import BeautifulSoup
-import requests
 import pafy
 import time
 import datetime
@@ -136,14 +134,13 @@ class SongDownloadModel(QObject):
         self.estimate_change.emit(str(datetime.timedelta(seconds=remaining_time)))
         
     
-    def start_download(self, csv_file_path, output_directory, normalize_flag, convert_flag, sleep_time, download_retry, retry_scrape_max):
+    def start_download(self, csv_file_path, output_directory, normalize_flag, convert_flag, sleep_time, download_retry):
         self.log("CSV File Path: " + csv_file_path)
         self.log("Output Directory: " + output_directory)
         self.log("Normalize Audio: " + str(normalize_flag))
         self.log("Convert: " + str(convert_flag))
         self.log("Retry delay: " + str(sleep_time) + " seconds")
         self.log("Download retry: " + str(download_retry))
-        self.log("Web scrape retry: " + str(retry_scrape_max))
         
         self._skipped_total = 0
         self._song_download_count = 0
