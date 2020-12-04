@@ -4,9 +4,6 @@ Songs are then converted to MP3s to add meta-data and to normalize the audio. Th
 
 An acceptable csv file can be generated here: http://joellehman.com/playlist/index.html
 
-## Download the installer to give it a try!
-The exe can be found here: music_dl/installer/Output/music_downloader_setup.exe
-
 ![music downloader screenshot](https://github.com/jmf11493/MusicDownloader/blob/main/screenshots/Music%20Download%20Screenshot.JPG)
 
 ## Basic Useage
