@@ -115,14 +115,8 @@ class SongDownloadModel(QObject):
     def calculate_normalize_average(self, timer_start, timer_end):
         self._average_normalize_time = self.calculate_average(timer_start, timer_end, self._normalize_time_array)
     
-    def calculate_convert_average(self, timer_start, timer_end):
-        self._average_convert_time = self.calculate_average(timer_start, timer_end, self._convert_time_array)
-    
-    def calc_estimated_time(self, normalize_flag, convert_flag):
+    def calc_estimated_time(self, normalize_flag):
         time_estimate = self._average_download_time
-        
-        if convert_flag:
-            time_estimate = time_estimate + self._average_convert_time
             
         if normalize_flag:
             time_estimate = time_estimate + self._average_normalize_time
@@ -134,11 +128,10 @@ class SongDownloadModel(QObject):
         self.estimate_change.emit(str(datetime.timedelta(seconds=remaining_time)))
         
     
-    def start_download(self, csv_file_path, output_directory, normalize_flag, convert_flag, sleep_time, download_retry):
+    def start_download(self, csv_file_path, output_directory, normalize_flag, sleep_time, download_retry):
         self.log("CSV File Path: " + csv_file_path)
         self.log("Output Directory: " + output_directory)
         self.log("Normalize Audio: " + str(normalize_flag))
-        self.log("Convert: " + str(convert_flag))
         self.log("Retry delay: " + str(sleep_time) + " seconds")
         self.log("Download retry: " + str(download_retry))
         
@@ -179,7 +172,6 @@ class SongDownloadModel(QObject):
             duration_ms  = self.string_clean(row[6])
             year         = ''
                 
-            # todo escape html characters before sending to query
             directory = root_dir + "\\" + band + "\\" + album
         
             # Check for kill signal
@@ -272,7 +264,14 @@ class SongDownloadModel(QObject):
                 
                 audio_stream.download(download_file_path, quiet=True, callback=self.download_callback )
                 self.log("Downloaded: " + name)
-                if total_file_size < 50000:
+                # Average file size 1 MB per minute which is 16 KB per second
+                kb_per_second = 16
+                song_length_seconds = int(duration_ms)/1000
+                # file size in bytes multiply by 1000, for a buffer we will divide it by 3
+                expected_file_size  = (song_length_seconds * kb_per_second * 1000)/3
+                
+                # Throw out files that are less than 1/3 of their expected file size
+                if total_file_size < expected_file_size:
                     self.log(name + " did not finish downloading or file size is too small to be a valid download")
                     self.log("file size: " + str(total_file_size))
                     self.log("file received: " + str(file_received))
@@ -308,6 +307,7 @@ class SongDownloadModel(QObject):
             if self._stop_download:
                 self.log('Stopped Execution')
                 return
+            
             # audio adjust m4a file
             if normalize_flag:
                 normalize_timer_start = time.time()
@@ -320,21 +320,11 @@ class SongDownloadModel(QObject):
                 self.log('Stopped Execution')
                 return            
                 
-            if convert_flag:
-                # convert file
-                convert_timer_start = time.time()
-                mp3_path = self.audio_formatter.convert_to_mp3( directory, name, download_file_path, self )
-                # Check for kill signal
-                if self._stop_download:
-                    self.log('Stopped Execution')
-                    return
-                
-                # add meta data
-                self.audio_formatter.add_meta_data(mp3_path, name, band, album, year, track_number, self)
-                convert_timer_end = time.time()
-                self.calculate_convert_average(convert_timer_start, convert_timer_end)
+            # add meta data
+            self.audio_formatter.add_meta_data(download_file_path, name, band, album, year, track_number, self)
+            
             self.log("Done")
-            self.calc_estimated_time(normalize_flag, convert_flag)
+            self.calc_estimated_time(normalize_flag)
         self.log("Finished downloading all songs")
         self.log("-----End of Log-----")
         return

@@ -19,7 +19,6 @@ class SongDownloadController(object):
         '''
         self._model          = model
         self._normalize      = True
-        self._convert        = True
         self._csv_file       = ''
         self._output_file    = ''
         self._sleep_time     = 2
@@ -27,9 +26,6 @@ class SongDownloadController(object):
         
     def normalize_change(self, value):
         self._normalize = value
-    
-    def convert_change(self, value):
-        self._convert = value
         
     def csv_change(self, value):
         self._csv_file = value
@@ -62,8 +58,7 @@ class SongDownloadController(object):
         self._model.start_download(
             self._csv_file, 
             self._output_file, 
-            self._normalize, 
-            self._convert,
+            self._normalize,
             self._sleep_time,
             self._download_try
         )
