@@ -121,7 +121,7 @@ class SongDownloadModel(QObject):
         song_total = len(list(csv.reader(csv_file))) - 1
         self.song_total(song_total)
 
-    def apply_scoring(self, result, band, song_length, search):
+    def apply_scoring(self, result, band, name, song_length, search):
         score = 0
         title = result['title']
         channel = result['channel']
@@ -152,11 +152,18 @@ class SongDownloadModel(QObject):
 
         result['duration'] = duration_sec
 
-        if self.str_lower_replace(channel) == self.str_lower_replace(band):
-            score = score + 10
+        # Band's channels aren't always a good indication of accuracy
+        # if self.str_lower_replace(channel) == self.str_lower_replace(band):
+        #     score = score + 10
 
         if "musicvideo" not in self.str_lower_replace(title):
             score = score + 15
+
+        if name not in self.str_lower_replace(title):
+            score = score - 30
+
+        print(title)
+        print(search)
 
         title_len = len(title)
         search_len = len(search)
@@ -251,6 +258,7 @@ class SongDownloadModel(QObject):
         csv_reader = csv.reader(csv_file, delimiter = ',')
         row_count = -1
         song_yt_ids = []
+        bad_yt_ids = ['JU1BlSgTXxw']
         for row in csv_reader:
             row_count = row_count + 1
             if row_count == 0:
@@ -347,11 +355,11 @@ class SongDownloadModel(QObject):
 
             scored_results = []
             for result in json_results['search_result']:
-                scored_results.append(self.apply_scoring(result, band, song_length_seconds, search))
+                scored_results.append(self.apply_scoring(result, band, name, song_length_seconds, search))
             for scored_result in scored_results:
                 if not best_match:
                     best_match = scored_result
-                elif best_match['score'] < scored_result['score']:
+                elif best_match['score'] < scored_result['score'] and scored_result['result']['id'] not in bad_yt_ids:
                     best_match = scored_result
             self.log_debug("Score: " + str(best_match['score']))
             best_match = best_match['result']
@@ -362,6 +370,7 @@ class SongDownloadModel(QObject):
 #             self.log( 'Search results: ' + better_results['result'] )
             youtube_id = best_match['id']
             youtube_url = best_match['link']
+            youtube_title = best_match['title']
             
             if youtube_id in song_yt_ids:
                 self.log_error('GOT THE SAME YOUTUBE ID!!! id:' + youtube_id + ' search: ' + search)
@@ -381,7 +390,7 @@ class SongDownloadModel(QObject):
                 self.song_failed(band + '-' + name)
                 continue
     
-            self.log_info(search + " :: youtube id: " + str(youtube_id) + " url:" + youtube_url)
+            self.log_info(search + " :: youtube title: " + youtube_title + " :: youtube id: " + str(youtube_id) + " url:" + youtube_url)
             retry = 0
             did_download = False
             
@@ -431,7 +440,7 @@ class SongDownloadModel(QObject):
                 # Average file size 1 MB per minute which is 16 KB per second
                 kb_per_second = 16
                 # file size in bytes multiply by 1000, for a buffer we will divide it by 3
-                expected_file_size= (song_length_seconds * kb_per_second * 1000)/3
+                expected_file_size = (song_length_seconds * kb_per_second * 1000)/3
 
                 if download_file_path.endswith('.m4a'):
                     remove_file = False
