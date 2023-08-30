@@ -1,4 +1,3 @@
-/music_dl/ffmpeg
 /music_dl/__pycache__
 /music_dl/build
 /music_dl/installer/*.iss

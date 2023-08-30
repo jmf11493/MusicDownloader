@@ -11,9 +11,6 @@ An acceptable csv file can be generated here: https://exportify.net/#playlists
 2. Select a valid input .csv file
 3. Click start download
 
-## Known issues:
-Currently using Pafy to download from youtube. One of the issues is some videos won't fully complete the download and result in a corrupt audio file. The software accounts for this by throwing out unreasonably small file sizes and logs an error into the log which song failed to download. Opened and issue for it here: https://github.com/mps-youtube/pafy/issues/267
-
 ## To Generate a New .exe and Installer
 1. pyinstaller command: pyinstaller main.py -n "Music Downloader" --noconsole -F
 Note: Failed to execute script: Delete all build files and re-run the pyinstaller command
