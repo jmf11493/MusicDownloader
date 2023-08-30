@@ -6,7 +6,6 @@ Created on Aug 5, 2020
 
 from PyQt5 import QtWidgets
 import sys
-from music_dl.audio_formatter import AudioFormatter
 from music_dl.song_download_controller import  SongDownloadController
 from music_dl.song_download_model import SongDownloadModel
 from music_dl.song_download_view import SongDownloadView 
@@ -14,8 +13,7 @@ from music_dl.song_download_view import SongDownloadView
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    audio_formatter = AudioFormatter()
-    model = SongDownloadModel(audio_formatter)
+    model = SongDownloadModel()
     controller = SongDownloadController(model)
     
     ui = SongDownloadView(model, controller, MainWindow)
