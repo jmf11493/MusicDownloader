@@ -4,6 +4,7 @@ Created on Aug 5, 2020
 @author: Jeff
 '''
 import os
+import sys
 import eyed3
 from pydub import AudioSegment
 from mutagen.mp4 import MP4
@@ -23,24 +24,31 @@ class AudioFormatter(object):
         Constructor
         '''
         self._logger = logger
-        AudioSegment.converter = "ffmpeg\\bin\\ffmpeg.exe"
-        AudioSegment.ffmpeg = "ffmpeg\\bin\\ffmpeg.exe"
-        AudioSegment.ffprobe = "ffmpeg\\bin\\ffprobe.exe"
+        dir = os.getcwd()
+        logger.log_info("MEIPASS: " + sys._MEIPASS)
+        logger.log_info("Current dir: " + dir)
 
+        ffmpeg = dir + "/ffmpeg/ffmpeg.exe"
+        ffprobe = dir + "/ffmpeg/ffprobe.exe"
 
-    def set_path(self):
-        # https://stackoverflow.com/questions/30006722/os-environ-not-setting-environment-variables
-        if os.path.exists('ffmpeg') and os.path.exists('ffmpeg\\bin'):
-            path = os.environ['PATH']
-            abs_path = '"' + os.path.abspath('ffmpeg\\bin') + '";'
-            if abs_path not in path.split(';'):
-                os.environ['PATH'] += ';' + abs_path
+        logger.log_info("ffmpeg dir: " + ffmpeg)
+        AudioSegment.converter = ffmpeg
+        AudioSegment.ffmpeg = ffmpeg
+        AudioSegment.ffprobe = ffprobe
+        logger.log_info("audio segment dir: " + AudioSegment.converter)
 
     def normalize_audio(self, audio_file):
-        # TODO make this a configuration
+        # TODO make this a configuration?
+        # https://stackoverflow.com/questions/42492246/how-to-normalize-the-volume-of-an-audio-file-in-python
         audio_adjust = -20.0
         self._logger.log_info("Normalizing Audio")
+        # TODO open in a sub process?
+        # https://stackoverflow.com/questions/43000394/python-windowserror-error-6-the-handle-is-invalid/43004804#43004804
+        # proc = subprocess.Popen(args, shell=True, stdout=open(outimploc, 'w'), stderr=open(outimplocerr, 'w'),
+        #                         stdin=subprocess.PIPE, cwd=self.tranusConf.workingDirectory).communicate()
+        # https://stackoverflow.com/questions/22284461/pydub-windowserror-error-2-the-system-can-not-find-the-file-specified
         try:
+            self._logger.log_info("audio segment dir, in normalize: " + AudioSegment.converter)
             audio_segment = AudioSegment.from_file(audio_file)
             change_in_dBFS = audio_adjust - audio_segment.dBFS
             normalized = audio_segment.apply_gain(change_in_dBFS)
@@ -51,7 +59,6 @@ class AudioFormatter(object):
 
     def convert_to_mp3(self, directory, file_name, file_path):
         path_to_mp3 = file_path
-        self.set_path()
         self._logger.log_info("Converting file: " + file_path)
         try:
             # If audio is too long we can get a memory error

@@ -7,12 +7,11 @@ Created on Aug 5, 2020
 from music_dl.song_download_model import SongDownloadModel 
 import threading
 
+
 class SongDownloadController(object):
     '''
     classdocs
     '''
-
-
     def __init__(self, model: SongDownloadModel):
         '''
         Constructor
@@ -23,7 +22,7 @@ class SongDownloadController(object):
         self._output_file    = ''
         self._sleep_time     = 2
         self._download_try   = 5
-        
+
     def normalize_change(self, value):
         self._normalize = value
         
@@ -38,14 +37,7 @@ class SongDownloadController(object):
 
     def output_dir_change(self, value):
         self._output_file = value
-    
-    
-    def time_sleep_change(self, value):
-        self._sleep_time = value
-        
-    def download_try_change(self, value):
-        self._download_try = value
-    
+
     def stop_download_click(self):
         self._model.stop_download(True)
     

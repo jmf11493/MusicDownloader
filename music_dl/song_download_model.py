@@ -41,8 +41,7 @@ class SongDownloadModel(QObject):
         self._song_failed = 0
         self._song_download_count = 0
         self._logger = Logger(self.log_change)
-        self.audio_formatter = AudioFormatter(self._logger)
-        
+        self.audio_formatter = None
         self._average_download_time = 0
         self._download_time_array = []
         self._average_convert_time = 0
@@ -140,13 +139,21 @@ class SongDownloadModel(QObject):
         
         self.estimate_change.emit(str(datetime.timedelta(seconds=remaining_time)))
 
+    def save_input_output_directories(self, csv_file_path, output_directory):
+        dir = os.getcwd()
+        file = dir + "\settings.txt"
+        open_file = open(file, 'w')
+        open_file.write(csv_file_path + ',' + output_directory)
+        open_file.close()
+
     def start_download(self, csv_file_path, output_directory, normalize_flag, sleep_time, download_retry):
+        self.save_input_output_directories(csv_file_path, output_directory)
         self._logger.log_debug("CSV File Path: " + csv_file_path)
         self._logger.log_debug("Output Directory: " + output_directory)
         self._logger.log_debug("Normalize Audio: " + str(normalize_flag))
         self._logger.log_debug("Retry delay: " + str(sleep_time) + " seconds")
         self._logger.log_debug("Download retry: " + str(download_retry))
-        
+        self.audio_formatter = AudioFormatter(self._logger)
         self._skipped_total = 0
         self._song_download_count = 0
         self._song_failed = 0
@@ -154,7 +161,7 @@ class SongDownloadModel(QObject):
 
         root_dir = output_directory
         if not root_dir or not os.path.exists(root_dir):
-            self._logger.log_error("output directory is empty")
+            self._logger.log_error("Output directory is empty")
             return
             
         csv_file = open(csv_file_path, newline='')
