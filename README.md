@@ -5,7 +5,7 @@ Songs are then converted to MP3s to add meta-data and to normalize the audio. Th
 ![music downloader screenshot](https://github.com/jmf11493/MusicDownloader/blob/main/screenshots/Music%20Download%20Screenshot.JPG)
 
 ## Basic Usage
-1. Download installer [here](https://github.com/jmf11493/MusicDownloader/music_dl.exe)
+1. Download installer [here](https://github.com/jmf11493/MusicDownloader/blob/main/music_dl.exe)
 3. Select desired output directory
 4. Select a valid input .csv file valid files can be created [here](https://exportify.net/#playlists)
 6. Click start download
