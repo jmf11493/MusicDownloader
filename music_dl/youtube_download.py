@@ -12,6 +12,7 @@ class YoutubeDownload:
         self._logger = logger
 
     def download(self, youtube_url: str, song: Song, directory: str, retries: int):
+        audio_to_download = None
         try:
             yt = YouTube(youtube_url)
             audio_streams = yt.streams.filter(only_audio=True, subtype='mp4')
