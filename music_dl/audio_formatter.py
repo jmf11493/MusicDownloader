@@ -25,7 +25,6 @@ class AudioFormatter(object):
         '''
         self._logger = logger
         dir = os.getcwd()
-        logger.log_info("MEIPASS: " + sys._MEIPASS)
         logger.log_info("Current dir: " + dir)
 
         ffmpeg = dir + "/ffmpeg/ffmpeg.exe"
